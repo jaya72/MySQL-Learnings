@@ -1,0 +1,346 @@
+595. Big Countries
+
+From <https://leetcode.com/problems/big-countries/> 
+
+SQL Schema
+Table: World
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| name        | varchar |
+| continent   | varchar |
+| area        | int     |
+| population  | int     |
+| gdp         | int     |
++-------------+---------+
+name is the primary key column for this table.
+Each row of this table gives information about the name of a country, the continent to which it belongs, its area, the population, and its GDP value.
+
+From <https://leetcode.com/problems/big-countries/> 
+
+A country is big if:
+	• it has an area of at least three million (i.e., 3000000 km2), or
+	• it has a population of at least twenty-five million (i.e., 25000000).
+Write an SQL query to report the name, population, and area of the big countries.
+Return the result table in any order.
+The query result format is in the following example.
+
+From <https://leetcode.com/problems/big-countries/> 
+
+Example 1:
+Input: 
+World table:
++-------------+-----------+---------+------------+--------------+
+| name        | continent | area    | population | gdp          |
++-------------+-----------+---------+------------+--------------+
+| Afghanistan | Asia      | 652230  | 25500100   | 20343000000  |
+| Albania     | Europe    | 28748   | 2831741    | 12960000000  |
+| Algeria     | Africa    | 2381741 | 37100000   | 188681000000 |
+| Andorra     | Europe    | 468     | 78115      | 3712000000   |
+| Angola      | Africa    | 1246700 | 20609294   | 100990000000 |
++-------------+-----------+---------+------------+--------------+
+Output: 
++-------------+------------+---------+
+| name        | population | area    |
++-------------+------------+---------+
+| Afghanistan | 25500100   | 652230  |
+| Algeria     | 37100000   | 2381741 |
++-------------+------------+---------+
+
+From <https://leetcode.com/problems/big-countries/> 
+
+Solution:
+
+# Write your MySQL query statement below
+select name, population, area 
+from World
+where
+(area >= 3000000 or population >= 25000000);
+
+596. Classes More Than 5 Students
+
+From <https://leetcode.com/problems/classes-more-than-5-students/> 
+SQL Schema
+Table: Courses
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| student     | varchar |
+| class       | varchar |
++-------------+---------+
+(student, class) is the primary key column for this table.
+Each row of this table indicates the name of a student and the class in which they are enrolled.
+
+From <https://leetcode.com/problems/classes-more-than-5-students/> 
+
+Write an SQL query to report all the classes that have at least five students.
+Return the result table in any order.
+The query result format is in the following example.
+ 
+Example 1:
+Input: 
+Courses table:
++---------+----------+
+| student | class    |
++---------+----------+
+| A       | Math     |
+| B       | English  |
+| C       | Math     |
+| D       | Biology  |
+| E       | Math     |
+| F       | Computer |
+| G       | Math     |
+| H       | Math     |
+| I       | Math     |
++---------+----------+
+Output: 
++---------+
+| class   |
++---------+
+| Math    |
++---------+
+Explanation: 
+- Math has 6 students, so we include it.
+- English has 1 student, so we do not include it.
+- Biology has 1 student, so we do not include it.
+- Computer has 1 student, so we do not include it.
+
+From <https://leetcode.com/problems/classes-more-than-5-students/> 
+
+Algorithm
+Using sub-query is one way to add some condition to a GROUP BY clause, however, using HAVING is another simpler and natural approach. So we can rewrite the above solution as below.
+MySQL
+SELECTclassFROMcourses
+GROUPBYclassHAVINGCOUNT(DISTINCT student) >= 5;
+
+From <https://leetcode.com/problems/classes-more-than-5-students/solution/> 
+
+select class from courses
+GROUP BY class
+HAVING COUNT(distinct student) >4;
+
+Solution:
+
+SELECT
+    class
+FROM
+    (SELECT
+        class, COUNT(DISTINCT student) AS num
+    FROM
+        courses
+    GROUP BY class) AS temp_table
+WHERE
+    num >= 5
+;
+
+1757. Recyclable and Low Fat Products
+
+From <https://leetcode.com/problems/recyclable-and-low-fat-products/?envType=study-plan&id=sql-i> 
+SQL Schema
+Table: Products
++-------------+---------+
+| Column Name | Type  |
++-------------+---------+
+| product_id  | int     |
+| low_fats    | enum    |
+| recyclable  | enum    |
++-------------+---------+
+product_id is the primary key for this table.
+low_fats is an ENUM of type ('Y', 'N') where 'Y' means this product is low fat and 'N' means it is not.
+recyclable is an ENUM of types ('Y', 'N') where 'Y' means this product is recyclable and 'N' means it is not.
+
+From <https://leetcode.com/problems/recyclable-and-low-fat-products/?envType=study-plan&id=sql-i> 
+
+Write an SQL query to find the ids of products that are both low fat and recyclable.
+Return the result table in any order.
+The query result format is in the following example.
+
+From <https://leetcode.com/problems/recyclable-and-low-fat-products/?envType=study-plan&id=sql-i> 
+
+Example 1:
+Input: 
+Products table:
++-------------+----------+------------+
+| product_id  | low_fats | recyclable |
++-------------+----------+------------+
+| 0           | Y        | N          |
+| 1           | Y        | Y          |
+| 2           | N        | Y          |
+| 3           | Y        | Y          |
+| 4           | N        | N          |
++-------------+----------+------------+
+Output: 
++-------------+
+| product_id  |
++-------------+
+| 1           |
+| 3           |
++-------------+
+Explanation: Only products 1 and 3 are both low fat and recyclable.
+
+From <https://leetcode.com/problems/recyclable-and-low-fat-products/?envType=study-plan&id=sql-i> 
+
+SOLUTION:
+
+SELECT
+      product_id
+    from
+      Products
+    WHERE
+      low_fats = 'Y'
+      and recyclable = 'Y'
+
+1758. Minimum Changes To Make Alternating Binary String
+
+From <https://leetcode.com/problems/minimum-changes-to-make-alternating-binary-string/> 
+
+You are given a string s consisting only of the characters '0' and '1'. In one operation, you can change any '0' to '1' or vice versa.
+The string is called alternating if no two adjacent characters are equal. For example, the string "010" is alternating, while the string "0100" is not.
+Return the minimum number of operations needed to make s alternating.
+ 
+Example 1:
+Input: s = "0100"
+Output: 1
+Explanation: If you change the last character to '1', s will be "0101", which is alternating.
+Example 2:
+Input: s = "10"
+Output: 0
+Explanation: s is already alternating.
+Example 3:
+Input: s = "1111"
+Output: 2
+Explanation: You need two operations to reach "0101" or "1010".
+ 
+Constraints:
+	• 1 <= s.length <= 104
+	• s[i] is either '0' or '1'.
+
+From <https://leetcode.com/problems/minimum-changes-to-make-alternating-binary-string/> 
+
+584. Find Customer Referee
+
+From <https://leetcode.com/problems/find-customer-referee/?envType=study-plan&id=sql-i> 
+
+SQL Schema
+Table: Customer
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| name        | varchar |
+| referee_id  | int     |
++-------------+---------+
+id is the primary key column for this table.
+Each row of this table indicates the id of a customer, their name, and the id of the customer who referred them.
+
+From <https://leetcode.com/problems/find-customer-referee/?envType=study-plan&id=sql-i> 
+
+Write an SQL query to report the names of the customer that are not referred by the customer with id = 2.
+Return the result table in any order.
+The query result format is in the following example.
+ 
+Example 1:
+Input: 
+Customer table:
++----+------+------------+
+| id | name | referee_id |
++----+------+------------+
+| 1  | Will | null       |
+| 2  | Jane | null       |
+| 3  | Alex | 2          |
+| 4  | Bill | null       |
+| 5  | Zack | 1          |
+| 6  | Mark | 2          |
++----+------+------------+
+Output: 
++------+
+| name |
++------+
+| Will |
+| Jane |
+| Bill |
+| Zack |
++------+
+
+From <https://leetcode.com/problems/find-customer-referee/?envType=study-plan&id=sql-i> 
+
+Solution:
+
+# Write your MySQL query statement below
+SELECT 
+    name
+from Customer
+    where referee_id <> 2 or referee_id IS NULL;
+
+
+183. Customers Who Never Order
+
+From <https://leetcode.com/problems/customers-who-never-order/?envType=study-plan&id=sql-i> 
+
+SQL Schema
+Table: Customers
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| name        | varchar |
++-------------+---------+
+id is the primary key column for this table.
+Each row of this table indicates the ID and name of a customer.
+ 
+Table: Orders
++-------------+------+
+| Column Name | Type |
++-------------+------+
+| id          | int  |
+| customerId  | int  |
++-------------+------+
+id is the primary key column for this table.
+customerId is a foreign key of the ID from the Customers table.
+Each row of this table indicates the ID of an order and the ID of the customer who ordered it.
+ 
+Write an SQL query to report all customers who never order anything.
+Return the result table in any order.
+The query result format is in the following example.
+ 
+Example 1:
+Input: 
+Customers table:
++----+-------+
+| id | name  |
++----+-------+
+| 1  | Joe   |
+| 2  | Henry |
+| 3  | Sam   |
+| 4  | Max   |
++----+-------+
+Orders table:
++----+------------+
+| id | customerId |
++----+------------+
+| 1  | 3          |
+| 2  | 1          |
++----+------------+
+Output: 
++-----------+
+| Customers |
++-----------+
+| Henry     |
+| Max       |
++-----------+
+
+From <https://leetcode.com/problems/customers-who-never-order/?envType=study-plan&id=sql-i> 
+
+Solution:
+
+# Write your MySQL query statement below
+select customers.name AS customers
+from customers 
+where customers.id not in (select customerid from orders);
+
+
+
+
+
+
+
