@@ -1,0 +1,204 @@
+175. Combine Two Tables
+
+From <https://leetcode.com/problems/combine-two-tables/?envType=study-plan&id=sql-i> 
+SQL Schema
+
+Table: Person
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| personId    | int     |
+| lastName    | varchar |
+| firstName   | varchar |
++-------------+---------+
+personId is the primary key column for this table.
+This table contains information about the ID of some persons and their first and last names.
+ 
+Table: Address
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| addressId   | int     |
+| personId    | int     |
+| city        | varchar |
+| state       | varchar |
++-------------+---------+
+addressId is the primary key column for this table.
+Each row of this table contains information about the city and state of one person with ID = PersonId.
+ 
+Write an SQL query to report the first name, last name, city, and state of each person in the Person table. If the address of a personId is not present in the Address table, report null instead.
+Return the result table in any order.
+The query result format is in the following example.
+ 
+Example 1:
+Input: 
+Person table:
++----------+----------+-----------+
+| personId | lastName | firstName |
++----------+----------+-----------+
+| 1        | Wang     | Allen     |
+| 2        | Alice    | Bob       |
++----------+----------+-----------+
+Address table:
++-----------+----------+---------------+------------+
+| addressId | personId | city          | state      |
++-----------+----------+---------------+------------+
+| 1         | 2        | New York City | New York   |
+| 2         | 3        | Leetcode      | California |
++-----------+----------+---------------+------------+
+Output: 
++-----------+----------+---------------+----------+
+| firstName | lastName | city          | state    |
++-----------+----------+---------------+----------+
+| Allen     | Wang     | Null          | Null     |
+| Bob       | Alice    | New York City | New York |
++-----------+----------+---------------+----------+
+Explanation: 
+There is no address in the address table for the personId = 1 so we return null in their city and state.
+addressId = 1 contains information about the address of personId = 2.
+
+From <https://leetcode.com/problems/combine-two-tables/?envType=study-plan&id=sql-i> 
+
+Solution:
+
+select p.firstName,p.lastName,a.city,a.state 
+from Person as p 
+left join Address as a 
+on p.personId=a.personId;
+
+1581. Customer Who Visited but Did Not Make Any Transactions
+
+From <https://leetcode.com/problems/customer-who-visited-but-did-not-make-any-transactions/?envType=study-plan&id=sql-i> 
+
+SQL Schema
+
+Table: Visits
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| visit_id    | int     |
+| customer_id | int     |
++-------------+---------+
+visit_id is the primary key for this table.
+This table contains information about the customers who visited the mall.
+ 
+Table: Transactions
++----------------+---------+
+| Column Name    | Type    |
++----------------+---------+
+| transaction_id | int     |
+| visit_id       | int     |
+| amount         | int     |
++----------------+---------+
+transaction_id is the primary key for this table.
+This table contains information about the transactions made during the visit_id.
+ 
+Write an SQL query to find the IDs of the users who visited without making any transactions and the number of times they made these types of visits.
+Return the result table sorted in any order.
+The query result format is in the following example.
+ 
+Example 1:
+Input: 
+Visits
++----------+-------------+
+| visit_id | customer_id |
++----------+-------------+
+| 1        | 23          |
+| 2        | 9           |
+| 4        | 30          |
+| 5        | 54          |
+| 6        | 96          |
+| 7        | 54          |
+| 8        | 54          |
++----------+-------------+
+Transactions
++----------------+----------+--------+
+| transaction_id | visit_id | amount |
++----------------+----------+--------+
+| 2              | 5        | 310    |
+| 3              | 5        | 300    |
+| 9              | 5        | 200    |
+| 12             | 1        | 910    |
+| 13             | 2        | 970    |
++----------------+----------+--------+
+Output: 
++-------------+----------------+
+| customer_id | count_no_trans |
++-------------+----------------+
+| 54          | 2              |
+| 30          | 1              |
+| 96          | 1              |
++-------------+----------------+
+Explanation: 
+Customer with id = 23 visited the mall once and made one transaction during the visit with id = 12.
+Customer with id = 9 visited the mall once and made one transaction during the visit with id = 13.
+Customer with id = 30 visited the mall once and did not make any transactions.
+Customer with id = 54 visited the mall three times. During 2 visits they did not make any transactions, and during one visit they made 3 transactions.
+Customer with id = 96 visited the mall once and did not make any transactions.
+As we can see, users with IDs 30 and 96 visited the mall one time without making any transactions. Also, user 54 visited the mall twice and did not make any transactions.
+
+From <https://leetcode.com/problems/customer-who-visited-but-did-not-make-any-transactions/?envType=study-plan&id=sql-i> 
+
+Solution:
+
+select customer_id,count(v.visit_id) as count_no_trans 
+from Visits v 
+  left join Transactions t
+  on v.visit_id = t.visit_id
+  where t.visit_id is NULL
+  group by customer_id
+
+1148. Article Views I
+
+From <https://leetcode.com/problems/article-views-i/?envType=study-plan&id=sql-i> 
+SQL Schema
+
+Table: Views
++---------------+---------+
+| Column Name   | Type    |
++---------------+---------+
+| article_id    | int     |
+| author_id     | int     |
+| viewer_id     | int     |
+| view_date     | date    |
++---------------+---------+
+There is no primary key for this table, it may have duplicate rows.
+Each row of this table indicates that some viewer viewed an article (written by some author) on some date. 
+Note that equal author_id and viewer_id indicate the same person.
+ 
+Write an SQL query to find all the authors that viewed at least one of their own articles.
+Return the result table sorted by id in ascending order.
+The query result format is in the following example.
+ 
+Example 1:
+Input: 
+Views table:
++------------+-----------+-----------+------------+
+| article_id | author_id | viewer_id | view_date  |
++------------+-----------+-----------+------------+
+| 1          | 3         | 5         | 2019-08-01 |
+| 1          | 3         | 6         | 2019-08-02 |
+| 2          | 7         | 7         | 2019-08-01 |
+| 2          | 7         | 6         | 2019-08-02 |
+| 4          | 7         | 1         | 2019-07-22 |
+| 3          | 4         | 4         | 2019-07-21 |
+| 3          | 4         | 4         | 2019-07-21 |
++------------+-----------+-----------+------------+
+Output: 
++------+
+| id   |
++------+
+| 4    |
+| 7    |
++------+
+
+From <https://leetcode.com/problems/article-views-i/?envType=study-plan&id=sql-i> 
+
+Solution:
+
+# Write your MySQL query statement below
+select distinct author_id as id 
+from Views 
+where author_id =  viewer_id
+order by id ;
+
